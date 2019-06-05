@@ -22,6 +22,8 @@ namespace Game
 		private HashSet<GameObject> _loadedAirports = new HashSet<GameObject>();
 		private (float size, Vector3 pos) _lastCameraProps;
 
+		public IReadOnlyList<AirportInfo> VisibleAirports => _visibleAirports;
+
 		private void Awake()
 		{
 			airportsTransform = airportsTransform ? airportsTransform : transform;
@@ -47,7 +49,7 @@ namespace Game
 		{
 			if (!airportPrefab || !viewCamera || !IsCameraUpdated) return;
 
-			var centerWorld = viewCamera.ViewportToWorldPoint(Vector3.one / 2);
+			var centerWorld = viewCamera.transform.position;
 			var center = WorldCoordinateHelper.WorldToLonLat(centerWorld);
 
 			var cornerWorld = viewCamera.ViewportToWorldPoint(center.Lat.RadValue < 0 ? Vector3.zero : Vector3.one);
@@ -65,6 +67,7 @@ namespace Game
 			foreach (var airport in _loadedAirports) SimplePool.Despawn(airport);
 			
 			_loadedAirports.Clear();
+			_visibleAirports.Clear();
 
 			foreach (var airport in visibleAirports)
 			{
@@ -72,8 +75,9 @@ namespace Game
 				spawned.transform.SetParent(airportsTransform, false);
 				spawned.transform.localPosition = WorldCoordinateHelper.LonLatToWorld(airport.Value.LonLat);
 				_loadedAirports.Add(spawned);
-			}
 
+				_visibleAirports.Add(airport.Value);
+			}
 		}
 
 		private bool IsCameraUpdated
@@ -88,12 +92,7 @@ namespace Game
 			}
 		}
 
-		private void CreateAirport(AirportInfo airport)
-		{
-			var airportObject = Instantiate(airportPrefab, airportsTransform);
-			airportObject.transform.localPosition = WorldCoordinateHelper.LonLatToWorld(airport.LonLat);
-		}
-
 		private readonly IAirportDataProvider _airportsProvider = new DefaultAirportDataProvider();
+		private readonly List<AirportInfo> _visibleAirports = new List<AirportInfo>();
 	}
 }

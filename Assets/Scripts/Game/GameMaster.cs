@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Coordinates;
+using Game;
+using Game.Flight;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -25,9 +28,11 @@ namespace UnityPlanes
 		[SerializeField] private List<GameObject> planePrefabs;
 		[SerializeField] private Transform planesTransform;
 		[SerializeField] private CameraEvents mainCamera;
+		[SerializeField] private Airports airports;
 
 		private readonly HashSet<Plane> _planes = new HashSet<Plane>();
 		private readonly HashSet<Plane> _freePlanes = new HashSet<Plane>();
+		private readonly IFlightProvider _flightProvider = new DefaultFlightProvider();
 
 		private float _lastCameraSize = 0;
 
@@ -41,9 +46,18 @@ namespace UnityPlanes
 
 		private void LaunchPlane(Plane plane)
 		{
-			var (from, path) = GetRandomFlight();
-			plane.transform.position = @from;
-			plane.Fly(path);
+			var centerWorld = MainCamera.transform.position;
+			var center = WorldCoordinateHelper.WorldToLonLat(centerWorld);
+
+			var cornerWorld = MainCamera.Camera.ViewportToWorldPoint(center.Lat.RadValue < 0 ? Vector3.zero : Vector3.one);
+			var corner = WorldCoordinateHelper.WorldToLonLat(cornerWorld);
+			
+			var radius = center.DistanceTo(corner);
+			
+			var flight = _flightProvider.CreateFlight(airports.VisibleAirports, center, radius);
+
+			plane.transform.position = WorldCoordinateHelper.LonLatToWorld(flight.Points.First());
+			plane.Fly(flight.Points.Skip(1).Select(pt => (Vector3) WorldCoordinateHelper.LonLatToWorld(pt)).ToArray());
 		}
 
 		private Plane GetPlane()
@@ -71,18 +85,6 @@ namespace UnityPlanes
 		private GameObject GetPlanePrefab()
 		{
 			return planePrefabs.PickRandom();
-		}
-
-		private (Vector3, Vector3[]) GetRandomFlight()
-		{
-			return (
-				new Vector3(Random.Range(0, 256.0f), Random.Range(0, 256.0f), 0),
-				new[]
-				{
-					new Vector3(Random.Range(0, 256.0f), Random.Range(0, 256.0f), 0),
-					new Vector3(Random.Range(0, 256.0f), Random.Range(0, 256.0f), 0),
-					new Vector3(Random.Range(0, 256.0f), Random.Range(0, 256.0f), 0)
-				});
 		}
 	}
 }
