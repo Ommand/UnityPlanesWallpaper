@@ -5,7 +5,7 @@ namespace Coordinates
 {
 	public static class WorldCoordinateHelper
 	{
-		private const float WorldSize = 256;
+		public const float WorldSize = 256;
 
 		private static readonly IWorldMapProjection Projection = new WebMercatorWorldMapProjectionBase();
 

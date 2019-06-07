@@ -471,6 +471,7 @@ MonoBehaviour:
   - {fileID: 2872814053319248346, guid: a459d4564e850484d8d0a3317d6174ae, type: 3}
   planesTransform: {fileID: 406047055}
   mainCamera: {fileID: 438585095}
+  airports: {fileID: 279902670}
 --- !u!4 &1072457844
 Transform:
   m_ObjectHideFlags: 0

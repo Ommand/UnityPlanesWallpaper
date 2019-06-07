@@ -12,7 +12,7 @@ namespace Game.Flight
 		private const float PassingTurnProbability = 0.75f;
 
 		private const float SafeDistanceMultiplier = 2f;
-		private const float TakeoffDist = 100_000;
+		private const float TakeoffDist = WorldCoordinateHelper.WorldSize * 1e-3f;
 
 		public FlightInfo CreateFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter, float radius)
 		{

@@ -49,10 +49,9 @@ namespace UnityPlanes
 			var centerWorld = MainCamera.transform.position;
 			var center = WorldCoordinateHelper.WorldToLonLat(centerWorld);
 
-			var cornerWorld = MainCamera.Camera.ViewportToWorldPoint(center.Lat.RadValue < 0 ? Vector3.zero : Vector3.one);
-			var corner = WorldCoordinateHelper.WorldToLonLat(cornerWorld);
-			
-			var radius = center.DistanceTo(corner);
+			var cornerWorld = MainCamera.Camera.ViewportToWorldPoint(Vector3.one);
+
+			var radius = Vector2.Distance(centerWorld, cornerWorld);
 			
 			var flight = _flightProvider.CreateFlight(airports.VisibleAirports, center, radius);
 
