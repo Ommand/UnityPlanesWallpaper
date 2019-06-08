@@ -55,8 +55,7 @@ namespace UnityPlanes
 			
 			var flight = _flightProvider.CreateFlight(airports.VisibleAirports, center, radius);
 
-			plane.transform.position = WorldCoordinateHelper.LonLatToWorld(flight.Points.First());
-			plane.Fly(flight.Points.Skip(1).Select(pt => (Vector3) WorldCoordinateHelper.LonLatToWorld(pt)).ToArray());
+			plane.Fly(flight);
 		}
 
 		private Plane GetPlane()

@@ -92,4 +92,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ff7fcda1f86417d4ea5e1e830e237335, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  scaleMultiplier: 0.02
+  scaleMultiplier: 0.015
