@@ -11,8 +11,6 @@ namespace Game.GameObjectModifiers
 		{
 			GameMaster.Instance.MainCamera.OnOrthoSizeChanged += MainCameraOnOnOrthoSizeChanged;
 			Scale(GameMaster.Instance.MainCamera.Camera.orthographicSize * scaleMultiplier);
-			
-			Debug.Log($"{name} Start");
 		}
 
 		private void OnDestroy()
