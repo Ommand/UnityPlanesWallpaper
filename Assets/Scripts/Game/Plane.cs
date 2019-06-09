@@ -20,7 +20,6 @@ public class Plane : MonoBehaviour
 	private float _speed = 1;
 	private Vector3 _targetSize;
 
-//	[SerializeField] private TrailRenderer _trailRenderer;
 	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private ParticleSystem _particleSystem;
 
@@ -30,7 +29,10 @@ public class Plane : MonoBehaviour
 	{
 		var particleSystemMain = _particleSystem.colorOverLifetime;
 		_spriteRenderer.color = RandomColor;
-		particleSystemMain.color = RandomColor;
+
+		var gradient = particleSystemMain.color.gradient;
+		gradient.SetKeys(new[] {new GradientColorKey(RandomColor, 0)}, gradient.alphaKeys);
+		particleSystemMain.color = gradient;
 
 		_speed = Random.Range(MinSpeed, MaxSpeed);
 		_targetSize = Vector3.one * Random.Range(MinSize, MaxSize);
