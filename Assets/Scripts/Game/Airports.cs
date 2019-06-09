@@ -20,7 +20,7 @@ namespace Game
 
 		private KdTree<float, AirportInfo> _airportsTree;
 		private HashSet<GameObject> _loadedAirports = new HashSet<GameObject>();
-		private (float size, Vector3 pos) _lastCameraProps;
+		private (float size, Vector3 pos, Rect pixelRect) _lastCameraProps;
 
 		public IReadOnlyList<AirportInfo> VisibleAirports => _visibleAirports;
 
@@ -34,7 +34,7 @@ namespace Game
 		private void BuildAirportsTree()
 		{
 			_airportsTree = new KdTree<float, AirportInfo>(2, new GeoMath());
-			
+
 			foreach (var airport in _airportsProvider.Airports.Where(airportInfo =>
 				WorldCoordinateHelper.IsLonLatAllowed(airportInfo.LonLat)))
 				_airportsTree.Add(new[] {airport.LonLat.Lat.DegValue, airport.LonLat.Lon.DegValue}, airport);
@@ -54,15 +54,16 @@ namespace Game
 
 			var cornerWorld = viewCamera.ViewportToWorldPoint(center.Lat.RadValue < 0 ? Vector3.zero : Vector3.one);
 			var corner = WorldCoordinateHelper.WorldToLonLat(cornerWorld);
-			
+
 			var radius = center.DistanceTo(corner);
 
 			var sw = Stopwatch.StartNew();
-			var visibleAirports = _airportsTree.RadialSearch(new[] {center.Lat.DegValue, center.Lon.DegValue}, radius / 1000);
+			var visibleAirports =
+				_airportsTree.RadialSearch(new[] {center.Lat.DegValue, center.Lon.DegValue}, radius / 1000);
 			sw.Stop();
 
 			foreach (var airport in _loadedAirports) SimplePool.Despawn(airport);
-			
+
 			_loadedAirports.Clear();
 			_visibleAirports.Clear();
 
@@ -81,9 +82,10 @@ namespace Game
 		{
 			get
 			{
-				if (_lastCameraProps == (viewCamera.orthographicSize, viewCamera.transform.position))
+				if (_lastCameraProps == (viewCamera.orthographicSize, viewCamera.transform.position,
+					    viewCamera.pixelRect))
 					return false;
-				_lastCameraProps = (viewCamera.orthographicSize, viewCamera.transform.position);
+				_lastCameraProps = (viewCamera.orthographicSize, viewCamera.transform.position, viewCamera.pixelRect);
 
 				return true;
 			}
