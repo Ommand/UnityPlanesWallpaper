@@ -61,9 +61,6 @@ namespace Game
 			var visibleAirports = _airportsTree.RadialSearch(new[] {center.Lat.DegValue, center.Lon.DegValue}, radius / 1000);
 			sw.Stop();
 
-			Debug.Log(
-				$"Updating airports view. Center = {center} radius = {radius}, found = {visibleAirports.Length}, time = {sw.ElapsedMilliseconds} ms");
-
 			foreach (var airport in _loadedAirports) SimplePool.Despawn(airport);
 			
 			_loadedAirports.Clear();

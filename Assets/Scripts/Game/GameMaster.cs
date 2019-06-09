@@ -26,6 +26,8 @@ namespace UnityPlanes
 		[SerializeField] private Airports airports;
 		[SerializeField] private Planes planes;
 
+		[SerializeField] private FadeEffect _fadeEffect;
+
 		private const float SpawnTimeout = 1;
 
 		public CameraEvents MainCamera => mainCamera;
@@ -33,6 +35,8 @@ namespace UnityPlanes
 		private void Start()
 		{
 			StartCoroutine(SpawnLoop());
+			
+			_fadeEffect.FadeOut();
 		}
 
 		private IEnumerator SpawnLoop()
