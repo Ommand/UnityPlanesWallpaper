@@ -527,6 +527,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3bf2b24fb78446c1aa6d5bacf646f7b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  intensity: 0.5
   minPlaneSpeed: 0.5
   maxPlaneSpeed: 3
   minPlaneSize: 0.05

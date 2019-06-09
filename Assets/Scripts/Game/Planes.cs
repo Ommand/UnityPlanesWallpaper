@@ -16,6 +16,8 @@ namespace UnityPlanes
 		private readonly HashSet<Plane> _freePlanes = new HashSet<Plane>();
 		private readonly IFlightProvider _flightProvider = new DefaultFlightProvider();
 
+		public int ActiveCount => _planes.Count - _freePlanes.Count;
+
 		public void CreatePlane(IReadOnlyList<AirportInfo> visibleAirports)
 		{
 			LaunchPlane(GetPlane(), visibleAirports);

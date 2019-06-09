@@ -19,12 +19,17 @@ namespace UnityPlanes
 
 		#endregion
 
-		#region WorldSettings
+		#region World Settings
 
 		public const float BaseCameraSize = 15;
 
 		public static float CameraSizeMultiplier =>
 			GameMaster.Instance.MainCamera.Camera.orthographicSize / BaseCameraSize;
+
+		[Header("World settings")] [Range(0, 1f)] [SerializeField]
+		private float intensity = 0.5f;
+
+		public static float Intensity => Instance.intensity;
 
 		#endregion
 
@@ -52,7 +57,7 @@ namespace UnityPlanes
 
 		#endregion
 
-		#region FlightsSettigns
+		#region Flights Settigns
 
 		[Header("Flight settings")] [Range(0.0f, 1f)] [SerializeField]
 		private float landingProbability = 0.25f;
