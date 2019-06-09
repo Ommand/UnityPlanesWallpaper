@@ -2,33 +2,30 @@ using System.Collections.Generic;
 using AirportData;
 using Coordinates;
 using UnityEngine;
+using UnityPlanes;
 
 namespace Game.Flight
 {
 	public class DefaultFlightProvider : IFlightProvider
 	{
-		private const float LandingProbability = 0.25f;
-		private const float TakeoffProbability = 0.25f;
-		private const float PassingTurnProbability = 0.8f;
-
-		private const float SafeDistanceMultiplier = 1.5f;
-		private const float TakeoffDist = WorldCoordinateHelper.WorldSize * 3e-2f;
+		private float TakeoffDist => WorldCoordinateHelper.WorldSize * Settings.TakeoffDist;
 
 		public FlightInfo CreateFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter, float radius)
 		{
 			var prob = Random.Range(0, 1f);
 
-			if (prob < LandingProbability)
+			if (prob < Settings.LandingProbability)
 				return CreateLandingFlight(availableAirports, viewCenter, radius);
 
-			if (prob < TakeoffProbability + LandingProbability)
+			if (prob < Settings.TakeoffProbability + Settings.LandingProbability)
 				return CreateTakeoffFlight(availableAirports, viewCenter, radius);
 
 			return CreatePassingFlight(availableAirports, viewCenter, radius);
 		}
 
 		//TODO Replace with spherical calculations
-		private FlightInfo CreateTakeoffFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter, float radius)
+		private FlightInfo CreateTakeoffFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter,
+			float radius)
 		{
 			var airport = availableAirports.PickRandom();
 			var dir = GetTakeoffDirection(airport);
@@ -38,22 +35,23 @@ namespace Game.Flight
 			var turnPointSpherical = WorldCoordinateHelper.WorldToLonLat(turnPoint);
 
 			var endPoint = WorldCoordinateHelper.LonLatToWorld(viewCenter) +
-			               Random.insideUnitCircle.normalized * (SafeDistanceMultiplier * radius);
+			               Random.insideUnitCircle.normalized * (Settings.SafeDistanceMultiplier * radius);
 			var endPointSpherical = WorldCoordinateHelper.WorldToLonLat(endPoint);
 
 			return new FlightInfo(new[] {airport.LonLat, turnPointSpherical, endPointSpherical}, true, false);
 		}
 
-		private FlightInfo CreateLandingFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter, float radius)
+		private FlightInfo CreateLandingFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter,
+			float radius)
 		{
 			var airport = availableAirports.PickRandom();
 			var dir = -GetTakeoffDirection(airport);
-			
+
 
 			var randomDir = Random.insideUnitCircle.normalized;
-			
+
 			var startPoint = WorldCoordinateHelper.LonLatToWorld(viewCenter) +
-			                 randomDir * (SafeDistanceMultiplier * radius);
+			                 randomDir * (Settings.SafeDistanceMultiplier * radius);
 			var startPointSpherical = WorldCoordinateHelper.WorldToLonLat(startPoint);
 
 			var endPoint = WorldCoordinateHelper.LonLatToWorld(airport.LonLat);
@@ -63,10 +61,11 @@ namespace Game.Flight
 			return new FlightInfo(new[] {startPointSpherical, turnPointSpherical, airport.LonLat}, false, true);
 		}
 
-		private FlightInfo CreatePassingFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter, float radius)
+		private FlightInfo CreatePassingFlight(IReadOnlyList<AirportInfo> availableAirports, LonLat viewCenter,
+			float radius)
 		{
 			var center = WorldCoordinateHelper.LonLatToWorld(viewCenter);
-			var startPoint = center + Random.insideUnitCircle.normalized * (SafeDistanceMultiplier * radius);
+			var startPoint = center + Random.insideUnitCircle.normalized * (Settings.SafeDistanceMultiplier * radius);
 			var dir = (center - startPoint).normalized;
 			var angle = Mathf.Atan2(dir.y, dir.x);
 
@@ -74,18 +73,18 @@ namespace Game.Flight
 			Vector2 endPoint;
 
 
-			if (Random.Range(0, 1f) < PassingTurnProbability)
+			if (Random.Range(0, 1f) < Settings.PassingTurnProbability)
 			{
 				turnPoint = center + Random.insideUnitCircle * (0.3f * radius);
 				const float halfPi = Mathf.PI / 2;
 				endPoint = center + GetRandomVectorOnUnitCircle(angle - halfPi, angle + halfPi) *
-				           (SafeDistanceMultiplier * radius);
+				           (Settings.SafeDistanceMultiplier * radius);
 			}
 			else
 			{
 				const float deg30 = Mathf.Rad2Deg * 30;
 				endPoint = center + GetRandomVectorOnUnitCircle(angle - deg30, angle + deg30) *
-				           (SafeDistanceMultiplier * radius);
+				           (Settings.SafeDistanceMultiplier * radius);
 			}
 
 			var startPointSpherical = WorldCoordinateHelper.WorldToLonLat(startPoint);
@@ -103,7 +102,7 @@ namespace Game.Flight
 		private Vector2 GetTakeoffDirection(AirportInfo airportInfo)
 		{
 			var hashCode = airportInfo.IATA.GetHashCode();
-			
+
 			var angle = (hashCode % 360) * Mathf.Deg2Rad;
 			return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
 		}
@@ -115,6 +114,6 @@ namespace Game.Flight
 			var angle = Random.Range(fromRad, toRad);
 			return new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
 		}
-		
+
 	}
 }

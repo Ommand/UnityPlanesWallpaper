@@ -4,38 +4,41 @@ using Coordinates;
 using DG.Tweening;
 using Game.Flight;
 using UnityEngine;
+using UnityPlanes;
 using Utils;
 using Random = UnityEngine.Random;
 
 public class Plane : MonoBehaviour
 {
-	private const float LandingDuration = 6;
-	
-	private const float MinSpeed = 0.5f;
-	private const float MaxSpeed = 3f;
-	
-	private const float MinSize = 0.05f;
-	private const float MaxSize = 0.2f;
-	
 	private float _speed = 1;
 	private Vector3 _targetSize;
+	private float _baseEmission;
 
 	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private ParticleSystem _particleSystem;
 
 	public event Action OnFlightFinished;
 
+	private float LandingDuration => Settings.PlaneLandingAnimationDuration;
+
+	private float BaseEmission => _baseEmission == 0
+		? (_baseEmission = _particleSystem.emission.rateOverDistance.constant)
+		: _baseEmission;
+
 	private void RandomizeValues()
 	{
-		var particleSystemMain = _particleSystem.colorOverLifetime;
 		_spriteRenderer.color = RandomColor;
 
-		var gradient = particleSystemMain.color.gradient;
-		gradient.SetKeys(new[] {new GradientColorKey(RandomColor, 0)}, gradient.alphaKeys);
-		particleSystemMain.color = gradient;
+		var particleSystemEmission = _particleSystem.emission;
+		particleSystemEmission.rateOverDistance = BaseEmission / Settings.CameraSizeMultiplier;
 
-		_speed = Random.Range(MinSpeed, MaxSpeed);
-		_targetSize = Vector3.one * Random.Range(MinSize, MaxSize);
+		var particleSystemColor = _particleSystem.colorOverLifetime;
+		var gradient = particleSystemColor.color.gradient;
+		gradient.SetKeys(new[] {new GradientColorKey(RandomColor, 0)}, gradient.alphaKeys);
+		particleSystemColor.color = gradient;
+
+		_speed = Random.Range(Settings.MinPlaneSpeed, Settings.MaxPlaneSpeed);
+		_targetSize = Vector3.one * Random.Range(Settings.MinPlaneSize, Settings.MaxPlaneSize);
 		_spriteRenderer.transform.localScale = _targetSize;
 	}
 
