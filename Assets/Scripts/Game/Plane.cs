@@ -6,6 +6,7 @@ using Game.Flight;
 using UnityEngine;
 using UnityPlanes;
 using Utils;
+using Utils.Visual;
 using Random = UnityEngine.Random;
 
 public class Plane : MonoBehaviour
@@ -13,6 +14,7 @@ public class Plane : MonoBehaviour
 	private float _speed = 1;
 	private Vector3 _targetSize;
 	private float _baseEmission;
+	private float _baseSpriteScale;
 
 	[SerializeField] private SpriteRenderer _spriteRenderer;
 	[SerializeField] private ParticleSystem _particleSystem;
@@ -25,24 +27,30 @@ public class Plane : MonoBehaviour
 		? (_baseEmission = _particleSystem.emission.rateOverDistance.constant)
 		: _baseEmission;
 
+	private void Awake()
+	{
+		_baseSpriteScale = _spriteRenderer.transform.localScale.x;
+	}
+
 	private void RandomizeValues()
 	{
-		_spriteRenderer.color = RandomColor;
+		var (primaryColor, secondaryColor) = ColorScheme.GetRandomPair();
+		
+		_spriteRenderer.color = primaryColor;
 
 		var particleSystemEmission = _particleSystem.emission;
 		particleSystemEmission.rateOverDistance = BaseEmission / Settings.CameraSizeMultiplier;
 
 		var particleSystemColor = _particleSystem.colorOverLifetime;
 		var gradient = particleSystemColor.color.gradient;
-		gradient.SetKeys(new[] {new GradientColorKey(RandomColor, 0)}, gradient.alphaKeys);
+		gradient.SetKeys(new[] {new GradientColorKey(secondaryColor, 0)}, gradient.alphaKeys);
 		particleSystemColor.color = gradient;
 
 		_speed = Random.Range(Settings.MinPlaneSpeed, Settings.MaxPlaneSpeed);
-		_targetSize = Vector3.one * Random.Range(Settings.MinPlaneSize, Settings.MaxPlaneSize);
+		_targetSize = Vector3.one * Random.Range(Settings.MinPlaneSize * _baseSpriteScale,
+			              Settings.MaxPlaneSize * _baseSpriteScale);
 		_spriteRenderer.transform.localScale = _targetSize;
 	}
-
-	private static Color RandomColor => new Color(Random.Range(0f, 1), Random.Range(0f, 1), Random.Range(0f, 1));
 
 	public void Fly(FlightInfo flightInfo)
 	{

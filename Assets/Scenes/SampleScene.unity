@@ -211,7 +211,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 279902668}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -1}
+  m_LocalPosition: {x: 0, y: 0, z: -0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -278,6 +278,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   planePrefabs:
   - {fileID: 2872814053319248346, guid: a459d4564e850484d8d0a3317d6174ae, type: 3}
+  - {fileID: 5091894318941568997, guid: 9edfff00b88a3574f9df19c6bfc15a87, type: 3}
+  - {fileID: 6384412007106079694, guid: 91fd6fd90ad1c324582e67daad73a58e, type: 3}
+  - {fileID: 240186742202390501, guid: 8aa9dc4a4308161418d3a8121956c8b1, type: 3}
   planesTransform: {fileID: 406047055}
 --- !u!1 &438585091
 GameObject:
@@ -427,13 +430,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   intensity: 0.5
-  minPlaneSpeed: 0.5
-  maxPlaneSpeed: 3
-  minPlaneSize: 0.05
-  maxPlaneSize: 0.2
+  minPlaneSpeed: 0.8
+  maxPlaneSpeed: 2.7
+  minPlaneSize: 0.065
+  maxPlaneSize: 0.1
   planeLandingAnimationDuration: 6
-  landingProbability: 0.25
-  takeoffProbability: 0.25
+  landingProbability: 0.15
+  takeoffProbability: 0.15
   passingTurnProbability: 0.8
   safeDistanceMultiplier: 1.5
   takeoffDist: 0.03

@@ -40,8 +40,8 @@ namespace UnityPlanes
 
 		[Range(0.1f, 10)] [SerializeField] private float maxPlaneSpeed;
 
-		[Range(0.02f, 0.3f)] [SerializeField] private float minPlaneSize;
-		[Range(0.02f, 0.3f)] [SerializeField] private float maxPlaneSize;
+		[Range(0.05f, 0.25f)] [SerializeField] private float minPlaneSize;
+		[Range(0.05f, 0.25f)] [SerializeField] private float maxPlaneSize;
 
 		[Range(0.1f, 10)] [SerializeField] private float planeLandingAnimationDuration;
 
