@@ -5,3 +5,5 @@ This repository purpose is to create an example of using tiled map loader ([Open
 - [ ] Automatically select viewport location on the map
 - [x] Flying logic
 - [ ] Make the program work with [Wallpaper Engine](https://store.steampowered.com/app/431960/Wallpaper_Engine/)
+## Preview
+[GIF preview](https://ibb.co/ScJYb4h)
