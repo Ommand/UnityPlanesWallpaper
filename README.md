@@ -6,4 +6,5 @@ This repository purpose is to create an example of using tiled map loader ([Open
 - [x] Flying logic
 - [ ] Make the program work with [Wallpaper Engine](https://store.steampowered.com/app/431960/Wallpaper_Engine/)
 ## Preview
+Accelerated version of what it looks like:
 ![GIF preview](https://raw.githubusercontent.com/Ommand/UnityPlanesWallpaper/master/Preview/preview.gif)
